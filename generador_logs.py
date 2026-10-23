@@ -1,7 +1,7 @@
 import random
 from datetime import datetime, timedelta
 
-# 1. Datos base de los errores 
+# Datos base de los errores 
 fails = ["ERROR-101: fake_temperature", "ERROR-102: low_pressure_hydraulic", "ERROR-103: fail_motor"]
 mensajes_info = ["start_cycle", "monitoring_stable", "piece_completed"]
 maquinas = ["CNC-01", "CNC-02", "ROBOT-07"]
@@ -14,14 +14,13 @@ def escribir_linea(archivo, tiempo, maquina, nivel, mensaje):
 
 
 def generar_log(nombre_archivo, lineas=100):
-    # 2. Fecha de inicio simulada (Año, Mes, Dia, Hora, Min, Seg)
+    # Fecha de inicio simulada (Año, Mes, Dia, Hora, Min, Seg)
     tiempo_actual = datetime(2026, 10, 23, 6, 0, 0)
 
-    # 3. Manejo de archivos
+    # archivos
     with open(nombre_archivo, 'w', encoding='utf-8') as archivo:
         for _ in range(lineas):
 
-            # 4. Lógica de probabilidad: 90% del tiempo opera normal, 10% falla
             es_falla = random.random() < 0.10
 
             if es_falla:
@@ -45,7 +44,6 @@ def generar_log(nombre_archivo, lineas=100):
             tiempo_actual += timedelta(minutes=salto_tiempo)
 
 
-# 7. Punto de entrada (Equivalente al main)
 if __name__ == "__main__":
     print("Simulando máquina CNC...")
     generar_log("datos_maquina_A.txt", lineas=50)
