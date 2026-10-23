@@ -1,33 +1,33 @@
 import re
-contador = 0
-errores = []
+counter = 0
+errors = []
 
-with open("datos_maquina_A.txt", 'r') as archivo:
-    for linea in archivo:
-        linea = linea.strip()
-        if "ERROR" in linea:
-            print(linea)
-            contador += 1
-            errores.append(linea)
+# Leyendo el archivo con el nombre correcto
+with open("data_machine_A.txt", 'r') as file:
+    for line in file:
+        line = line.strip()
+        if "ERROR" in line:
+            print(line)
+            counter += 1
+            errors.append(line)
 
-print(f" El total de errores es : {contador}")
-for e in errores:
-    print(e)
+print(f" El total de errores es : {counter}")
+for error_line in errors:
+    print(error_line)
 
     #Imprimo la fecha del error 
-    date = re.search(r"\d+-\d+-\d+", e)
-    print(date.group())
+    error_date = re.search(r"\d+-\d+-\d+", error_line)
+    print(error_date.group())
 
-    #Imprimo la hroa del error 
-    time = re.search(r"\d+:\d+:\d+", e)
-    print(time.group())
+    #Imprimo la hora del error 
+    error_time = re.search(r"\d+:\d+:\d+", error_line)
+    print(error_time.group())
 
     #Imprimo el ID de la maquina 
-    id = re.search(r"[A-Z]+-\d+", e)
-    print(id.group())
+    machine_id = re.search(r"[A-Z]+-\d+", error_line)
+    print(machine_id.group())
 
     #Imprimo el error
-    error = re.search(r"\[ERROR\] [A-Z]+-\d+", e)
-    codigo_error = error.group().replace("[ERROR] ", "")
-    print(codigo_error) 
-
+    error_match = re.search(r"\[ERROR\] [A-Z]+-\d+", error_line)
+    error_code = error_match.group().replace("[ERROR] ", "")
+    print(error_code) 

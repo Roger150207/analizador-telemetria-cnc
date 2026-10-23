@@ -3,48 +3,49 @@ from datetime import datetime, timedelta
 
 # Datos base de los errores 
 fails = ["ERROR-101: fake_temperature", "ERROR-102: low_pressure_hydraulic", "ERROR-103: fail_motor"]
-mensajes_info = ["start_cycle", "monitoring_stable", "piece_completed"]
-maquinas = ["CNC-01", "CNC-02", "ROBOT-07"]
+info_messages = ["start_cycle", "monitoring_stable", "piece_completed"]
+machines = ["CNC-01", "CNC-02", "ROBOT-07"]
 
 
-def escribir_linea(archivo, tiempo, maquina, nivel, mensaje):
-    marca_tiempo = tiempo.strftime("%Y-%m-%d %H:%M:%S")
-    linea_log = f"{marca_tiempo} [{maquina}] [{nivel}] {mensaje}\n"
-    archivo.write(linea_log)
+def escribir_linea(file, log_time, machine, level, message):
+    timestamp = log_time.strftime("%Y-%m-%d %H:%M:%S")
+    log_line = f"{timestamp} [{machine}] [{level}] {message}\n"
+    file.write(log_line)
 
 
-def generar_log(nombre_archivo, lineas=100):
+def generar_log(file_name, lines=100):
     # Fecha de inicio simulada (Año, Mes, Dia, Hora, Min, Seg)
-    tiempo_actual = datetime(2026, 10, 23, 6, 0, 0)
+    current_time = datetime(2026, 10, 23, 6, 0, 0)
 
     # archivos
-    with open(nombre_archivo, 'w', encoding='utf-8') as archivo:
-        for _ in range(lineas):
+    with open(file_name, 'w', encoding='utf-8') as file:
+        for _ in range(lines):
 
-            es_falla = random.random() < 0.10
+            is_failure = random.random() < 0.10
 
-            if es_falla:
-                maquina = random.choice(maquinas)
-                mensaje = random.choice(fails)
-                escribir_linea(archivo, tiempo_actual, maquina, "ERROR", mensaje)
+            if is_failure:
+                machine = random.choice(machines)
+                message = random.choice(fails)
+                escribir_linea(file, current_time, machine, "ERROR", message)
 
-                tiempo_reparacion = random.randint(15, 60)
-                tiempo_actual += timedelta(minutes=tiempo_reparacion)
+                repair_time = random.randint(15, 60)
+                current_time += timedelta(minutes=repair_time)
 
-                escribir_linea(archivo, tiempo_actual, maquina, "INFO", "R-000 production_resumed")
+                escribir_linea(file, current_time, machine, "INFO", "R-000 production_resumed")
 
-                salto_tiempo = random.randint(1, 5)
+                time_jump = random.randint(1, 5)
                 
             else:
-                maquina = random.choice(maquinas)
-                mensaje = random.choice(mensajes_info)
-                escribir_linea(archivo, tiempo_actual, maquina, "INFO", mensaje)
-                salto_tiempo = random.randint(1, 5)
+                machine = random.choice(machines)
+                message = random.choice(info_messages)
+                escribir_linea(file, current_time, machine, "INFO", message)
+                time_jump = random.randint(1, 5)
 
-            tiempo_actual += timedelta(minutes=salto_tiempo)
+            current_time += timedelta(minutes=time_jump)
 
 
 if __name__ == "__main__":
     print("Simulando máquina CNC...")
-    generar_log("datos_maquina_A.txt", lineas=50)
+    # Nombre de archivo actualizado para coincidir con el analizador
+    generar_log("data_machine_A.txt", lines=50)
     print("Log generado con éxito.")
