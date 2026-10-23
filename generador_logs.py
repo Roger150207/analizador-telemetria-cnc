@@ -44,7 +44,7 @@ def generar_log(file_name, lines=100):
             current_time += timedelta(minutes=time_jump)
 
 if __name__ == "__main__":
-    print("Simulando máquina CNC...")
-    # Nombre de archivo actualizado para coincidir con el analizador
+    print("Simulating machine CNC...")
     generar_log("data_machine_A.txt", lines=50)
-    print("Log generado con éxito.")
+    print("Log create succesfuly.")
+
