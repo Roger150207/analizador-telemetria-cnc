@@ -49,3 +49,7 @@ Los nombres de variables y comentarios del codigo estan en proceso de migracion 
 ## Autor
 
 Rogelio Saldaña Colorado
+
+## Screenshot
+
+![Reporte de downtime](screenshot.png)
