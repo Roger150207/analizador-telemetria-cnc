@@ -1,33 +1,39 @@
+from datetime import datetime
 import re
-counter = 0
-errors = []
 
-# Leyendo el archivo con el nombre correcto
-with open("data_machine_A.txt", 'r') as file:
+# Aqui subo el archivo 
+all_lines = []
+with open("data_machine_A.txt", 'r', encoding='utf-8') as file:
     for line in file:
-        line = line.strip()
-        if "ERROR" in line:
-            print(line)
-            counter += 1
-            errors.append(line)
+        all_lines.append(line.strip())
 
-print(f" El total de errores es : {counter}")
-for error_line in errors:
-    print(error_line)
+# Emparejo el error con su clave y caluclo el dowtime 
+downtimes = []
+counter = 0
 
-    #Imprimo la fecha del error 
-    error_date = re.search(r"\d+-\d+-\d+", error_line)
-    print(error_date.group())
+for i, line in enumerate(all_lines):
+    if "ERROR" in line:
+        counter += 1
+        error_date = re.search(r"\d+-\d+-\d+", line)
+        error_time = re.search(r"\d+:\d+:\d+", line)
+        error_dt = datetime.strptime(f"{error_date.group()} {error_time.group()}", "%Y-%m-%d %H:%M:%S")
+        error_machine = re.search(r"[A-Z]+-\d+", line).group()
 
-    #Imprimo la hora del error 
-    error_time = re.search(r"\d+:\d+:\d+", error_line)
-    print(error_time.group())
+        # Busco la recuperacion de la misma maquina
+        for next_line in all_lines[i + 1:]:
+            next_machine_match = re.search(r"[A-Z]+-\d+", next_line)
+            if next_machine_match and next_machine_match.group() == error_machine and "R-000" in next_line:
+                recovery_date = re.search(r"\d+-\d+-\d+", next_line)
+                recovery_time = re.search(r"\d+:\d+:\d+", next_line)
+                recovery_dt = datetime.strptime(f"{recovery_date.group()} {recovery_time.group()}", "%Y-%m-%d %H:%M:%S")
 
-    #Imprimo el ID de la maquina 
-    machine_id = re.search(r"[A-Z]+-\d+", error_line)
-    print(machine_id.group())
+                downtime_seconds = (recovery_dt - error_dt).total_seconds()
+                downtime_minutes = int(downtime_seconds / 60)
 
-    #Imprimo el error
-    error_match = re.search(r"\[ERROR\] [A-Z]+-\d+", error_line)
-    error_code = error_match.group().replace("[ERROR] ", "")
-    print(error_code) 
+                downtimes.append((error_machine, downtime_minutes))
+                break
+
+# Muestro el dowtime
+print(f"El total de errores es : {counter}")
+for machine, minutes in downtimes:
+    print(f"{machine}: {minutes} minutos de downtime")
